@@ -1,8 +1,8 @@
-""" Commit hook for pylint """
-import sys
-import logging
 
-from . import gitinfo, python_check, basic_style, pylint
+import os
+
+
+from . import gitinfo
 
 
 class GitHook(object):
@@ -13,48 +13,101 @@ class GitHook(object):
     def should_check_file(self, file):
         raise NotImplementedError
 
-    def check_file(self, file):
+    def check_file(self, changset_info, file):
         raise NotImplementedError
 
 
-class PylintHook(GitHook):
-    """ GitHook subclass for pylint. This hook checks whether we do not regress with
-    pylint. """
+class DisposableFile(object):
 
-    def __init__(self):
-        self.config = pylint.config_from_pylintrc()
+    def __init__(self, name):
+        self.name = name
 
-    def should_check_file(self, file):
-        return python_check.is_python_file(file)
-
-    def check_file(self, file):
-        return python_check.pylint_check_file(self.config, file)
+    def delete(self):
+        return
 
 
-class BasicStyleHook(GitHook):
-    """ Basic hooks to check basic coding style metrics """
+class TemporaryFile(DisposableFile):
 
-    def should_check_file(self, file):
-        return basic_style.check_file(file)
+    def __init__(self, name):
+        self.name = name
 
-    def check_file(self, file):
-        return basic_style.check_format(file)
+    def delete(self):
+        if self.name != None:
+            os.remove(self.name)
 
-hooks = [PylintHook(), BasicStyleHook()]
 
-def precommit_hook():
-    logging.basicConfig(format='%(message)s', level=logging.INFO)
-    errors = 0
-    for filename in gitinfo.list_committed_files():
-        for hook in hooks:
-            try:
-                if hook.should_check_file(filename) \
-                   and not hook.check_file(filename):
-                    errors += 1
-            except IOError:
-                print 'File not found (probably deleted): {}\t\tSKIPPED'.format(
-                    filename)
-    if errors != 0:
-        logging.error("VF POLICY ERROR: please fix the above errors and commit again. (%d errors)" % errors)
+class ChangeSetInfo(object):
+    """ Superclass for getting git data from different git hooks """
 
-    return errors == 0
+    # All files changed in this changeset
+    def list_modified_files(self):
+        raise NotImplementedError
+
+    def commit_messages(self):
+        raise NotImplementedError
+
+    # Get a handle to the contents of the presented file before the changeset
+    def original_content(self, filename):
+        raise NotImplementedError
+
+    # Get a handle to the contents of the presented file after the changeset
+    def current_content(self, filename):
+        raise NotImplementedError
+
+    # Get a handle to the file of the presented file before the changeset
+    def original_file(self, filename):
+        raise NotImplementedError
+
+    # Get a handle to the file of the presented file after the changeset
+    def current_file(self, filename):
+        raise NotImplementedError
+
+
+class PrecommitGitInfo(ChangeSetInfo):
+
+    def list_modified_files(self):
+        """ Returns a list of files about to be commited. """
+        return gitinfo.list_staged_files(gitinfo.current_commit())
+
+    def commit_messages(self):
+        return []
+
+    def original_file(self, filename):
+        return TemporaryFile(gitinfo.revision_tmp_file(gitinfo.current_commit(), filename))
+
+    def current_file(self, filename):
+        return DisposableFile(filename)
+
+    def original_content(self, filename):
+        return gitinfo.revision_content(gitinfo.current_commit(), filename)
+
+    def current_content(self, filename):
+        with open(filename) as f:
+            ret = f.read()
+        return ret
+
+
+class UpdateGitInfo(ChangeSetInfo):
+
+    def __init__(self, branch, from_rev, to_rev):
+        self.branch = branch
+        self.from_rev = from_rev
+        self.to_rev = to_rev
+
+    def list_modified_files(self):
+        return gitinfo.list_committed_files(self.from_rev, self.to_rev)
+
+    def commit_messages(self):
+        return []
+
+    def original_file(self, filename):
+        return TemporaryFile(gitinfo.revision_tmp_file(self.from_rev, filename))
+
+    def current_file(self, filename):
+        return TemporaryFile(gitinfo.revision_tmp_file(self.to_rev, filename))
+
+    def original_content(self, filename):
+        return gitinfo.revision_content(self.from_rev, filename)
+
+    def current_content(self, filename):
+        return gitinfo.revision_content(self.to_rev, filename)

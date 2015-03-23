@@ -6,11 +6,11 @@ Git pre-commit hook.
 
 import sys
 
-from vfgithook import githook
+from vfgithook import githooks
 
 
 if __name__ == '__main__':
-    if githook.precommit_hook():
+    if githooks.precommit_hook():
         sys.exit(0)
     else:
         sys.exit(1)
