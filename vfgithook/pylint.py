@@ -13,19 +13,21 @@ PylintConfig = collections.namedtuple(
     'limit, pylint_exe, pylintrc, pylint_params')
 
 
-def config_from_pylintrc(config):
+def config_from_pylintrc(pylintrc='.pylintrc'):
     """Load hook options from the pylintrc file (if any)"""
-    if not os.path.exists(config.pylintrc):
-        return config
+    config = PylintConfig(8.0, 'pylint', pylintrc, '')
 
-    conf = ConfigParser.SafeConfigParser()
-    conf.read(config.pylintrc)
-    if conf.has_option('pre-commit-hook', 'command'):
-        config.pylint_exe = conf.get('pre-commit-hook', 'command')
-    if conf.has_option('pre-commit-hook', 'params'):
-        config.pylint_params += ' ' + conf.get('pre-commit-hook', 'params')
-    if conf.has_option('pre-commit-hook', 'limit'):
-        config.limit = float(conf.get('pre-commit-hook', 'limit'))
+    if os.path.exists(pylintrc):
+        conf = ConfigParser.SafeConfigParser()
+        conf.read(pylintrc)
+        section = 'vfgithook'
+        if conf.has_option(section, 'command'):
+            config.pylint_exe = conf.get(section, 'command')
+        if conf.has_option(section, 'params'):
+            config.pylint_params += ' ' + conf.get(section, 'params')
+        if conf.has_option(section, 'limit'):
+            config.limit = float(conf.get(section, 'limit'))
+
     return config
 
 

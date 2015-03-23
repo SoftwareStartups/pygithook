@@ -6,6 +6,39 @@ import sys
 from . import pylint, gitinfo
 
 
+def is_python_file(filename):
+    """Check if the input file looks like a Python script
+
+    Returns True if the filename ends in ".py" or if the first line
+    contains "python" and "#!", returns False otherwise.
+
+    """
+    if filename.endswith('.py'):
+        return True
+    else:
+        with open(filename, 'r') as file_handle:
+            first_line = file_handle.readline()
+        return 'python' in first_line and '#!' in first_line
+
+
+def pylint_check_files(config, python_files):
+    """Check all python_files with pylint"""
+    assert len(python_files) > 0
+
+    all_passed = True
+    file_count = 1
+    for python_file in python_files:
+        sys.stdout.write("Running pylint on {} (file {}/{})..\t".format(
+            python_file, file_count, len(python_files)))
+        sys.stdout.flush()
+
+        passed = pylint_check_file(config, python_file)
+        all_passed = all_passed and passed
+        file_count += 1
+
+    return all_passed
+
+
 def pylint_check_file(config, python_file):
     """Check python_file with pylint.
     The check passes if the file is new and has a pylint score >= limit,
@@ -40,21 +73,4 @@ def pylint_check_file(config, python_file):
     print '\t%s' % ('PASSED' if passed else 'FAILED')
     return passed
 
-
-def pylint_check_files(config, python_files):
-    """Check all python_files with pylint"""
-    assert len(python_files) > 0
-
-    all_passed = True
-    file_count = 1
-    for python_file in python_files:
-        sys.stdout.write("Running pylint on {} (file {}/{})..\t".format(
-            python_file, file_count, len(python_files)))
-        sys.stdout.flush()
-
-        passed = pylint_check_file(config, python_file)
-        all_passed = all_passed and passed
-        file_count += 1
-
-    return all_passed
 
