@@ -11,3 +11,4 @@ obj
 # Unit test / coverage reports
 .coverage
 .tox
+install
