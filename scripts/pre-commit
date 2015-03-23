@@ -1,0 +1,3 @@
+#!/usr/bin/env bash
+INSTALLDIR=/home/martijn-local/work/gitpush/vfgithook/install
+PYTHONPATH=$INSTALLDIR/lib:$PYTHONPATH $INSTALLDIR/bin/vf-pre-commit
