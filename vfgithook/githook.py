@@ -1,28 +1,60 @@
 """ Commit hook for pylint """
 import sys
+import logging
 
-from . import gitinfo, python_check, pylint
+from . import gitinfo, python_check, basic_style, pylint
 
 
-def _committed_python_files():
-    """Find Python files"""
-    python_files = []
-    for filename in gitinfo.list_committed_files():
-        try:
-            if python_check.is_python_file(filename):
-                python_files.append(filename)
-        except IOError:
-            print 'File not found (probably deleted): {}\t\tSKIPPED'.format(
-                filename)
-    return python_files
+class GitHook(object):
+    """ This is the base class for all git checks. It determines which files it will
+    check and implements the itself
+    """
 
+    def should_check_file(self, file):
+        raise NotImplementedError
+
+    def check_file(self, file):
+        raise NotImplementedError
+
+
+class PylintHook(GitHook):
+    """ GitHook subclass for pylint. This hook checks whether we do not regress with
+    pylint. """
+
+    def __init__(self):
+        self.config = pylint.config_from_pylintrc()
+
+    def should_check_file(self, file):
+        return python_check.is_python_file(file)
+
+    def check_file(self, file):
+        return python_check.pylint_check_file(self.config, file)
+
+
+class BasicStyleHook(GitHook):
+    """ Basic hooks to check basic coding style metrics """
+
+    def should_check_file(self, file):
+        return basic_style.check_file(file)
+
+    def check_file(self, file):
+        return basic_style.check_format(file)
+
+hooks = [PylintHook(), BasicStyleHook()]
 
 def precommit_hook():
-    """Main function doing the checks"""
+    logging.basicConfig(format='%(message)s', level=logging.INFO)
+    errors = 0
+    for filename in gitinfo.list_committed_files():
+        for hook in hooks:
+            try:
+                if hook.should_check_file(filename) \
+                   and not hook.check_file(filename):
+                    errors += 1
+            except IOError:
+                print 'File not found (probably deleted): {}\t\tSKIPPED'.format(
+                    filename)
+    if errors != 0:
+        logging.error("VF POLICY ERROR: please fix the above errors and commit again. (%d errors)" % errors)
 
-    python_files = _committed_python_files()
-    if len(python_files) == 0:
-        sys.exit(0)
-
-    config = pylint.config_from_pylintrc()
-    return python_check.pylint_check_files(config, python_files)
+    return errors == 0
