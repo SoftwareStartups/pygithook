@@ -15,6 +15,26 @@ def current_commit():
         return 'HEAD'
 
 
+def current_commit_hash():
+    """Return the current commit (HEAD) revision"""
+    return command.execute('git rev-parse HEAD'.split()).stdout.split()[0]
+
+
+def list_commit_messages(from_rev, to_rev):
+    """ Returns a list of files about to be commited. """
+    messages = []
+    diff_index_cmd = 'git log --pretty=oneline %s..%s' % (from_rev, to_rev)
+    output = subprocess.check_output(
+        diff_index_cmd.split()
+    )
+    for result in output.split('\n'):
+        if result != '':
+            _, _, message = result.partition(' ')
+            messages.append(message)
+
+    return messages
+
+
 def list_staged_files(revision):
     """ Returns a list of files about to be commited. """
     files = []

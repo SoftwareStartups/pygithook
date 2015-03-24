@@ -98,7 +98,7 @@ class UpdateGitInfo(ChangeSetInfo):
         return gitinfo.list_committed_files(self.from_rev, self.to_rev)
 
     def commit_messages(self):
-        return []
+        return gitinfo.list_commit_messages(self.from_rev, self.to_rev)
 
     def original_file(self, filename):
         return TemporaryFile(gitinfo.revision_tmp_file(self.from_rev, filename))

@@ -2,7 +2,7 @@
 import sys
 import logging
 
-from . import githook, pylint_check, basic_style, pylint, gitinfo
+from . import githook, pylint_check, basic_style, pylint, gitinfo, message_check, branch_check
 
 
 hooks = [pylint_check.PylintHook(), basic_style.BasicStyleHook()]
@@ -22,6 +22,7 @@ def run_hooks(changset_info):
 
 
 def precommit_hook():
+    branch_check.validate_branch()
     return run_hooks(githook.PrecommitGitInfo())
 
 
@@ -30,4 +31,16 @@ def update_hook(branch, from_rev, to_rev):
     if from_rev == gitinfo.null_commit:
         from_rev = gitinfo.start_commit
 
-    return run_hooks(githook.UpdateGitInfo(branch, from_rev, to_rev))
+    changset_info = githook.UpdateGitInfo(branch, from_rev, to_rev)
+
+    hooks_ok = run_hooks(changset_info)
+    messages_ok = message_check.check_messages(changset_info.commit_messages())
+
+    return hooks_ok and messages_ok
+
+
+def message_hook(message_file):
+    with open(message_file) as msg:
+        return message_check.check_message(msg.read())
+    return False
+

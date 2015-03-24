@@ -1,0 +1,18 @@
+#!/usr/bin/env python
+
+"""
+Git commit message update hook.
+"""
+
+import sys
+
+from vfgithook import githooks
+
+if __name__ == '__main__':
+    if githooks.message_hook(sys.argv[1]):
+        sys.exit(0)
+    else:
+        sys.exit(1)
+
+
+sys.exit(1)

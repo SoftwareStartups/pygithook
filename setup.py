@@ -12,7 +12,7 @@ setup (name = 'vfgithook',
     license = 'Copyright (c) 2015 Vector Fabrics, all rights reserved',
     packages = ['vfgithook'],
     scripts = ['scripts/vf-pre-commit', 'scripts/pre-commit', 'scripts/vf-update',
-    'scripts/update', 'scripts/commit-msg'],
+    'scripts/update', 'scripts/commit-msg', 'scripts/vf-commit-msg'],
 #    install_requires=[
 #        'pylint',
 #    ],
