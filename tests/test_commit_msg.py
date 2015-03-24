@@ -5,7 +5,7 @@ from vfgithook import githooks, gitinfo
 
 
 def test_message_update_ok(gitrepo):
-    """Test python_check.is_python_file"""
+    """Test whether the update hook will succeed when all is in order"""
 
     # Create file 'a'
     file_a = util.write_file(gitrepo, 'a.ml', '')
@@ -39,7 +39,7 @@ def test_message_update_ok(gitrepo):
 
 
 def test_message_update_fail(gitrepo):
-    """Test python_check.is_python_file"""
+    """ Test whether the update hook will fail when a message is wrong """
 
     # Create file 'a'
     file_a = util.write_file(gitrepo, 'a.ml', '')

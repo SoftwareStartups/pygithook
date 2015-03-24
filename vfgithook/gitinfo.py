@@ -7,6 +7,7 @@ from . import command
 null_commit = '0000000000000000000000000000000000000000'
 start_commit = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
 
+
 def current_commit():
     """Return the current commit (HEAD) revision"""
     if command.execute('git rev-parse --verify HEAD'.split()).status:
@@ -16,12 +17,12 @@ def current_commit():
 
 
 def current_commit_hash():
-    """Return the current commit (HEAD) revision"""
+    """ Return the current commit (HEAD) revision's hash """
     return command.execute('git rev-parse HEAD'.split()).stdout.split()[0]
 
 
 def list_commit_messages(from_rev, to_rev):
-    """ Returns a list of files about to be commited. """
+    """ Returns a list of commit messages. """
     messages = []
     diff_index_cmd = 'git log --pretty=oneline %s..%s' % (from_rev, to_rev)
     output = subprocess.check_output(
@@ -52,7 +53,7 @@ def list_staged_files(revision):
 
 
 def list_committed_files(from_rev, to_rev):
-    """ Returns a list of files about to be commited. """
+    """ Returns a list of files changed in a range of commits. """
     files = []
     diff_index_cmd = 'git diff --name-only %s %s' % (from_rev, to_rev)
     output = subprocess.check_output(

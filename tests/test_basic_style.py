@@ -5,7 +5,7 @@ from vfgithook import githooks
 
 
 def test_basic_style_ok(gitrepo):
-    """Test python_check.is_python_file"""
+    """Test whether the basic_style hook will pass when everything is ok"""
 
     # Create file 'a'
     file_a = util.write_file(gitrepo, 'a.ml', '')
@@ -21,7 +21,7 @@ def test_basic_style_ok(gitrepo):
 
 
 def test_basic_style_problem(gitrepo):
-    """Test python_check.is_python_file"""
+    """Test whether the basic_style hook will fail when something is wrong"""
 
     # Create file 'a'
     file_a = util.write_file(gitrepo, 'a.ml', ' ')
