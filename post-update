@@ -1,9 +1,9 @@
 #!/bin/bash
 
-# This script is supposed to be called from within a git repository and will install the
-# vectorfabrics githooks into that repository
+# This script can be symlinked as post-receive hook and will automatically
+# update and build the vfgithooks repository
 
-# Get the directory of this install script
+# Get the directory of this hook script
 SOURCE="${BASH_SOURCE[0]}"
 while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
   DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
@@ -12,9 +12,11 @@ while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symli
 done
 DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 
-GITDIR=$(git rev-parse --show-toplevel)
+# Build the hooks
+pushd $DIR
 
-# Add the symlinks
-ln -sf $DIR/install/bin/pre-commit $GITDIR/.git/hooks/pre-commit
-ln -sf $DIR/install/bin/commit-msg $GITDIR/.git/hooks/commit-msg
+git pull
 
+make
+
+popd
