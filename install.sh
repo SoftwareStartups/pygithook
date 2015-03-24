@@ -23,5 +23,6 @@ make
 popd
 
 # Add the symlinks
-ln -s $DIR/install/bin/pre-commit $GITDIR/.git/hooks/pre-commit
+ln -sf $DIR/install/bin/pre-commit $GITDIR/.git/hooks/pre-commit
+ln -sf $DIR/install/bin/commit-msg $GITDIR/.git/hooks/commit-msg
 

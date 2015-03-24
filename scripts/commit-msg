@@ -1,0 +1,7 @@
+# Check for a jira VFA/VFG number in the commit message.
+# To enable this hook, copy to .git/hooks/commit-msg
+
+test "" != "$(grep -E '(VFG|VFA|VFS|VFW)-[[:digit:]]+' "$1")" || {
+        echo >&2 "ERROR: Commit message is missing Jira issue number."
+        exit 1
+}
