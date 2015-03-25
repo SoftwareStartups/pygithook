@@ -15,6 +15,6 @@ DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 GITDIR=$(git rev-parse --show-toplevel)
 
 # Add the symlinks
-ln -sf $DIR/install/bin/pre-commit $GITDIR/.git/hooks/pre-commit
-ln -sf $DIR/install/bin/commit-msg $GITDIR/.git/hooks/commit-msg
+ln -sf $DIR/../../../install/bin/pre-commit $GITDIR/.git/hooks/pre-commit
+ln -sf $DIR/../../../install/bin/commit-msg $GITDIR/.git/hooks/commit-msg
 
