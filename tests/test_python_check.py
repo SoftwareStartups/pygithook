@@ -5,6 +5,9 @@ from vfgithook import pylint_check
 from . import util
 
 
+# pylint: disable=protected-access
+
+
 def test_is_python_file(gitrepo):
     """Test pylint_check.is_python_file"""
 

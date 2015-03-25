@@ -4,31 +4,39 @@ from . import githook, pylint_check, basic_style, \
     gitinfo, message_check, branch_check
 
 
-hooks = [pylint_check.PylintHook(), basic_style.BasicStyleHook()]
+HOOKS = [pylint_check.PylintHook(), basic_style.BasicStyleHook()]
 
 
 def run_hooks(changset_info):
+    """
+    This function iterates over all changed files and runs
+    the defined hooks on each of them, returning whether any issues were
+    found.
+    """
     errors = 0
     for filename in changset_info.list_modified_files():
-        for hook in hooks:
+        for hook in HOOKS:
             if hook.should_check_file(filename) \
                and not hook.check_file(changset_info, filename):
                 errors += 1
     if errors != 0:
-        print "VF POLICY ERROR: please fix the above errors and commit again. (%d errors)" % errors
+        print "VF POLICY ERROR: please fix the above \
+                errors and commit again. (%d errors)" % errors
 
     return errors == 0
 
 
 def precommit_hook():
+    """ Function to be called from the pre-commit hook """
     branch_check.validate_branch()
     return run_hooks(githook.PrecommitGitInfo())
 
 
 def update_hook(branch, from_rev, to_rev):
+    """ Function to be called from the update hook """
 
-    if from_rev == gitinfo.null_commit:
-        from_rev = gitinfo.start_commit
+    if from_rev == gitinfo.NULL_COMMIT:
+        from_rev = gitinfo.START_COMMIT
 
     changset_info = githook.UpdateGitInfo(branch, from_rev, to_rev)
 
@@ -39,6 +47,7 @@ def update_hook(branch, from_rev, to_rev):
 
 
 def message_hook(message_file):
+    """ Function to be called from the commit-msg hook """
     with open(message_file) as msg:
         return message_check.check_message(msg.read())
     return False

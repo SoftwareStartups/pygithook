@@ -4,14 +4,17 @@ import subprocess
 
 from . import command
 
-null_commit = '0000000000000000000000000000000000000000'
-start_commit = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
+# pylint: disable=no-member
+
+
+NULL_COMMIT = '0000000000000000000000000000000000000000'
+START_COMMIT = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
 
 
 def current_commit():
     """Return the current commit (HEAD) revision"""
     if command.execute('git rev-parse --verify HEAD'.split()).status:
-        return start_commit
+        return START_COMMIT
     else:
         return 'HEAD'
 

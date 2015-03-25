@@ -1,1 +1,1 @@
-"""Library for implementing git hooks"""
+""" Library for implementing git hooks """

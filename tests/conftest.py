@@ -7,6 +7,7 @@ import pytest
 
 from . import util
 
+# pylint: disable=no-member
 
 @pytest.fixture
 def gitrepo(request):

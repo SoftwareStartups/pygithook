@@ -7,6 +7,7 @@ import ConfigParser
 
 from . import command
 
+# pylint: disable=no-member
 
 PylintConfig = collections.namedtuple(
     'PylintConfig',
