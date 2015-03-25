@@ -1,11 +1,14 @@
 INSTALLDIR := $(shell pwd)/install
 
-.PHONY: all test install clean clean_all
+.PHONY: all test install clean clean_all pylint
 
 default all: install
 
 test: tests
-	py.test $<
+	py.test --junitxml=./report.xml $<
+
+pylint:
+	pylint --rcfile=pylintrc -f parseable vfgithook tests > pylint.txt
 
 install:
 	INSTALL_BASE=$(INSTALLDIR) ./setup.py install

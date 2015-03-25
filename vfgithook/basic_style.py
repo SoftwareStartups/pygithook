@@ -1,39 +1,35 @@
-#! /usr/bin/env python
-#
-# Check formatting of Caml files.
-# Copy to .git/hooks/pre-commit
+""" this module tests for coding style issues in many different text files """
 
 import re
 import os
 import sys
-import logging
-import subprocess
 
 from . import githook
 
-tabs = re.compile(r'(\t+)')
-trail = re.compile(r'([ \t]+)$')
+TABS = re.compile(r'(\t+)')
+TRAIL = re.compile(r'([ \t]+)$')
 
-lang_types = ['ml', 'mli', 'mly', 'mll', 'py', 'lint',
+LANG_TYPES = ['ml', 'mli', 'mly', 'mll', 'py', 'lint',
               '.hh', '.hpp', '.hxx', '.h++', '.cc', '.cpp',
               '.cxx', '.c++', 'c', 'h']
-checkLengthMagic = '__VF_HGHOOK_IGNORE_LONGLINE'
+CHECKLENGTHMAGIC = '__VF_HGHOOK_IGNORE_LONGLINE'
 
 
 def _check_file(filename):
     "return True if the filename can be checked"
     _basename, extension = os.path.splitext(filename)
-    return extension.lstrip('.') in lang_types
+    return extension.lstrip('.') in LANG_TYPES
 
 
 def _linelen(line, tabsize=8):
-    tabCnt = line.count('\t')
-    if not tabCnt:
+    """ Calculate the length of aline, considering tabsize """
+    tab_cnt = line.count('\t')
+    if not tab_cnt:
         return len(line)
 
     count = 0
-    for c in line:
-        if c == '\t':
+    for char in line:
+        if char == '\t':
             count += tabsize - count % tabsize
         else:
             count += 1
@@ -42,18 +38,17 @@ def _linelen(line, tabsize=8):
 
 
 class ValidationStats(object):
+    """ Class for accumulating error statistics """
+
     def __init__(self):
         self.toolong = 0
         self.tabs = 0
         self.trailwhite = 0
         self.cret = 0
-        self.onMaster = False
 
     def __nonzero__(self):
         return self.toolong or self.tabs or \
-               self.trailwhite or self.cret or \
-               self.onMaster
-
+               self.trailwhite or self.cret
 
 def _validate(changset_info, filename, stats, exit_code):
     def msg(lineno, line, message):
@@ -69,7 +64,7 @@ def _validate(changset_info, filename, stats, exit_code):
 
     for i, line in enumerate(stagedLines):
         # skip line length checks if the magic word is found
-        if checkLengthMagic in line:
+        if CHECKLENGTHMAGIC in line:
             checkLength = False
 
         line = line.rstrip('\n')
@@ -88,14 +83,14 @@ def _validate(changset_info, filename, stats, exit_code):
             bad()
 
         # no tabs used to indent
-        match = tabs.search(line)
+        match = TABS.search(line)
         if match:
             stats.tabs += 1
             msg(i, line, 'using tabs')
             bad()
 
         # no trailing whitespace
-        if trail.search(line):
+        if TRAIL.search(line):
             stats.trailwhite += 1
             msg(i, line, 'trailing whitespace')
             bad()

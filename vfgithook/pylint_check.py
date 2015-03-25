@@ -3,7 +3,7 @@ import decimal
 import os
 import sys
 
-from . import pylint, gitinfo, githook
+from . import pylint, githook
 
 
 def _is_python_file(filename):
@@ -22,24 +22,6 @@ def _is_python_file(filename):
             return 'python' in first_line and '#!' in first_line
         except IOError:
             return False
-
-
-def pylint_check_files(config, python_files):
-    """Check all python_files with pylint"""
-    assert len(python_files) > 0
-
-    all_passed = True
-    file_count = 1
-    for python_file in python_files:
-        sys.stdout.write("Running pylint on {} (file {}/{})..\t".format(
-            python_file, file_count, len(python_files)))
-        sys.stdout.flush()
-
-        passed = pylint_check_file(config, python_file)
-        all_passed = all_passed and passed
-        file_count += 1
-
-    return all_passed
 
 
 def _pylint_check_file(config, orig_file, current_file):

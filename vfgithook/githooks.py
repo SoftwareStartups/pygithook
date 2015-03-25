@@ -1,8 +1,7 @@
 """ Commit hook for pylint """
-import sys
-import logging
 
-from . import githook, pylint_check, basic_style, pylint, gitinfo, message_check, branch_check
+from . import githook, pylint_check, basic_style, \
+    gitinfo, message_check, branch_check
 
 
 hooks = [pylint_check.PylintHook(), basic_style.BasicStyleHook()]

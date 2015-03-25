@@ -10,10 +10,10 @@ class GitHook(object):
     check and implements the itself
     """
 
-    def should_check_file(self, file):
+    def should_check_file(self, filename):
         raise NotImplementedError
 
-    def check_file(self, changset_info, file):
+    def check_file(self, changset_info, filename):
         raise NotImplementedError
 
 
@@ -29,7 +29,7 @@ class DisposableFile(object):
 class TemporaryFile(DisposableFile):
 
     def __init__(self, name):
-        self.name = name
+        DisposableFile.__init__(self, name)
 
     def delete(self):
         if self.name != None:
@@ -73,7 +73,8 @@ class PrecommitGitInfo(ChangeSetInfo):
         return []
 
     def original_file(self, filename):
-        return TemporaryFile(gitinfo.revision_tmp_file(gitinfo.current_commit(), filename))
+        return TemporaryFile(
+            gitinfo.revision_tmp_file(gitinfo.current_commit(), filename))
 
     def current_file(self, filename):
         return DisposableFile(filename)

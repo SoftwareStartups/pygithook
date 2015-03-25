@@ -12,3 +12,5 @@ obj
 .coverage
 .tox
 install
+pylint.txt
+report.xml
