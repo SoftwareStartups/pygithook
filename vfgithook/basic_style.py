@@ -66,8 +66,12 @@ def _validate(changset_info, filename, stats, exit_code):
         """ To be called when we find a styling violation """
         if exit_code is not None:
             sys.exit(exit_code)
+    content = changset_info.current_content(filename)
 
-    staged_lines = changset_info.current_content(filename).split('\n')
+    if content == None:
+        return
+
+    staged_lines = content.split('\n')
 
     check_length = True
 
