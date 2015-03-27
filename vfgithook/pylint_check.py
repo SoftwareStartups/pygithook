@@ -29,6 +29,9 @@ def _pylint_check_file(config, orig_file, current_file):
     The check passes if the file is new and has a pylint score >= limit,
     or if the score has not decreased wrt the current version.
     """
+    if current_file.name == None:
+        return True
+
     # Allow __init__.py files to be completely empty
     if os.path.basename(current_file) == '__init__.py':
         if os.stat(current_file).st_size == 0:
