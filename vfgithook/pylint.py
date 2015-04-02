@@ -36,7 +36,6 @@ def config_from_pylintrc(pylintrc='.pylintrc'):
 
 def pylint(config, python_file):
     """Run pylint on python_file and return the pylint output"""
-    print '<<<<<<<<<', python_file
     try:
         cmd = [config.pylint_exe]
 
