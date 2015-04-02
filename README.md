@@ -1,12 +1,12 @@
 vfgithooks
 ==========
 
-By default the script looks in the root directory of your project for a .pylintrc file, which it passes to pylint.  It also looks for a [pre-commit-hook] section for options of it's own.
+By default the script looks at /home1/local64/vfgithook/config/vfpylintrc, which it passes to pylint.
 
 Installation
 ------------
 
-	make
+make
 
 Usage
 ------
@@ -15,9 +15,9 @@ The commit hook will automatically be called when you are running `git commit`. 
 
 ### Configuration
 
-Settings are loaded by default from the .pylintrc file in the root of your repo.
+Settings are loaded by default from the pylintrc file.
 
-    [pre-commit-hook]
+    [vfgithook]
     command=custom_pylint
     params=--rcfile=/path/to/another/pylint.rc
     limit=8.0
@@ -28,14 +28,19 @@ _params_ lets you pass custom parameters to pylint
 
 _limit_ is the lowest value which you want to allow for a pylint score.  Any lower than this, and the script will fail and won't commit.
 
-Any of these can be bypassed directly in the pre-commit hook itself.  You can also set a different default place to look for the pylintrc file.
-
 Running tests
 -------------
 
 The test suite requires py.test to be installed. Install it with `pip install pytest`, then run the tests by executing the following command (in the project root folder):
 
     make test
+
+Debugging
+---------
+
+Set the following environment variable:
+
+    VFGITHOOK_LOGGING=<installdir>/config/logging.json
 
 Requirements
 ------------
