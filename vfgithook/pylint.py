@@ -46,7 +46,7 @@ def pylint(config, python_file):
         else:
             cmd.append('--rcfile={}'.format(config.pylintrc))
 
-        cmd.append(python_file)
+        cmd += ['--reports=y', python_file]
         res = command.execute(cmd)
         logger.debug(cmd)
         return res.stdout
