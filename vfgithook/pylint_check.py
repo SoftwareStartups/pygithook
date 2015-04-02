@@ -48,10 +48,10 @@ def _pylint_check_file(config, orig_file, current_file):
     # Verify the score
     if orig_score is None:
         passed = (current_score >= config.limit)
-        sys.stdout.write('{:.2}/10'.format(decimal.Decimal(current_score)))
+        sys.stdout.write('{:.2f}/10'.format(decimal.Decimal(current_score)))
     else:
         passed = (current_score >= orig_score)
-        sys.stdout.write('{:.2} -> {:.2}'.format(
+        sys.stdout.write('{:.2f} -> {:.2f}'.format(
             decimal.Decimal(orig_score), decimal.Decimal(current_score)))
 
     print '\t%s' % ('PASSED' if passed else 'FAILED')

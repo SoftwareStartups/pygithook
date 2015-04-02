@@ -36,6 +36,7 @@ def config_from_pylintrc(pylintrc='.pylintrc'):
 
 def pylint(config, python_file):
     """Run pylint on python_file and return the pylint output"""
+    print '<<<<<<<<<', python_file
     try:
         cmd = [config.pylint_exe]
 
@@ -64,8 +65,6 @@ def parse_score(pylint_output):
     Parse the score out of pylint's output as a float
     If the score is not found, return 0.0.
     """
-        
-
     for line in pylint_output.splitlines():
         match = re.match(_SCORE_REGEXP, line)
         if match:
