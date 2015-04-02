@@ -3,15 +3,17 @@ import os
 import sys
 import re
 import collections
+import logging
 import ConfigParser
 
 from . import command
 
-# pylint: disable=no-member
 
 PylintConfig = collections.namedtuple(
     'PylintConfig',
     'limit, pylint_exe, pylintrc, pylint_params')
+
+logger = logging.getLogger(__name__)
 
 
 def config_from_pylintrc(pylintrc='.pylintrc'):
@@ -45,7 +47,9 @@ def pylint(config, python_file):
             cmd.append('--rcfile={}'.format(config.pylintrc))
 
         cmd.append(python_file)
-        return command.execute(cmd).stdout
+        res = command.execute(cmd)
+        logger.debug(cmd)
+        return res.stdout
     except OSError:
         print "\nAn error occurred. Is pylint installed?"
         sys.exit(1)
@@ -56,13 +60,16 @@ _SCORE_REGEXP = re.compile(
 
 
 def parse_score(pylint_output):
-    """Parse the score out of pylint's output as a float
-
-    If the score is not found, return 0.0.
-
     """
+    Parse the score out of pylint's output as a float
+    If the score is not found, return 0.0.
+    """
+        
+
     for line in pylint_output.splitlines():
         match = re.match(_SCORE_REGEXP, line)
         if match:
-            return float(match.group(1))
+            score = float(match.group(1))
+            logger.debug("%s, score=%.2f", line, score)
+            return score
     return 0.0
