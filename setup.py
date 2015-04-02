@@ -13,6 +13,8 @@ setup (name = 'vfgithook',
     packages = ['vfgithook'],
     scripts = ['scripts/vf-pre-commit', 'scripts/pre-commit', 'scripts/vf-update',
     'scripts/update', 'scripts/commit-msg', 'scripts/vf-commit-msg', 'scripts/install.sh'],
+    data_files = [
+        ('config', ['config/logging.json', 'config/vfpylintrc'])]
 #    install_requires=[
 #        'pylint',
 #    ],
