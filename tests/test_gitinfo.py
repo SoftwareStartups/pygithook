@@ -30,6 +30,10 @@ def test_list_staged_files(gitrepo):
     util.cmd(gitrepo, 'git add ' + file_a)
     assert gitinfo.list_staged_files(gitinfo.current_commit()) == [file_a]
 
+    # Change 'a' to 'b' and check what is staged
+    file_a = util.write_file(gitrepo, 'a', 'bar')
+    assert gitinfo.revision_content("", file_a) == "foo"
+
     # Commit 'a'
     util.cmd(gitrepo, 'git commit -m msg')
     assert len(gitinfo.list_staged_files(gitinfo.current_commit())) == 0
@@ -41,3 +45,4 @@ def test_list_staged_files(gitrepo):
     # Add 'a'
     util.cmd(gitrepo, 'git add ' + file_a)
     assert gitinfo.list_staged_files(gitinfo.current_commit()) == [file_a]
+

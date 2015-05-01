@@ -128,17 +128,16 @@ class PrecommitGitInfo(ChangeSetInfo):
 
     def current_file(self, filename):
         """ This is the file currently in the tree """
-        return DisposableFile(filename)
+        return TemporaryFile(
+            gitinfo.revision_tmp_file("", filename))
 
     def original_content(self, filename):
         """ Extract the file contents from git """
         return gitinfo.revision_content(gitinfo.current_commit(), filename)
 
     def current_content(self, filename):
-        """ Publish the current contents from the working tree """
-        with open(filename) as fhandle:
-            ret = fhandle.read()
-        return ret
+        """ Publish the current contents from the index """
+        return gitinfo.revision_content("", filename)
 
 
 class UpdateGitInfo(ChangeSetInfo):

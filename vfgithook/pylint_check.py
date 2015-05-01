@@ -68,8 +68,7 @@ class PylintHook(githook.GitHook):
     def __init__(self):
         self.config = pylint.config_from_pylintrc(self._default_pylintrc)
 
-    @staticmethod
-    def should_check_file(filename):
+    def should_check_file(self, filename):
         return _is_python_file(filename)
 
     def check_file(self, changeset_info, filename):

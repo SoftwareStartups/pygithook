@@ -11,7 +11,7 @@ from . import command
 NULL_COMMIT = '0000000000000000000000000000000000000000'
 START_COMMIT = '4b825dc642cb6eb9a060e54bf8d69288fbee4904'
 
-logger = logging.getLogger(__name__)
+LOGGER = logging.getLogger(__name__)
 
 
 def current_commit():
@@ -38,8 +38,8 @@ def list_commit_messages(from_rev, to_rev):
         if result != '':
             _, _, message = result.partition(' ')
             messages.append(message)
- 
-    logger.debug("%s: %s", diff_index_cmd, messages)
+
+    LOGGER.debug("%s: %s", diff_index_cmd, messages)
     return messages
 
 
@@ -56,7 +56,7 @@ def list_staged_files(revision):
             if result[4] in ['A', 'M']:
                 files.append(result[5])
 
-    logger.debug("%s: %s", diff_index_cmd, files)
+    LOGGER.debug("%s: %s", diff_index_cmd, files)
     return files
 
 
@@ -71,7 +71,7 @@ def list_committed_files(from_rev, to_rev):
         if result != '':
             files.append(result)
 
-    logger.debug("%s: %s", diff_index_cmd, files)
+    LOGGER.debug("%s: %s", diff_index_cmd, files)
     return files
 
 
@@ -80,7 +80,7 @@ def revision_content(revision, filename):
     cmd = 'git show %s:%s' % (revision, filename)
     result = command.execute(cmd.split())
 
-    logger.debug(cmd)
+    LOGGER.debug(cmd)
 
     if result.status != 0:
         return None

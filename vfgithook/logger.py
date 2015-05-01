@@ -6,7 +6,7 @@ import logging
 import logging.config
 
 
-def setup_logger(default_path='logging.yaml', 
+def setup_logger(default_path='logging.yaml',
                  default_level=logging.INFO,
                  env_key='VFGITHOOK_LOGGING'):
     """Setup logging configuration"""
