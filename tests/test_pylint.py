@@ -3,7 +3,6 @@
 from vfgithook import pylint, githooks
 
 import tests.util as util
-import inspect
 
 
 def test_parse_score():
@@ -22,13 +21,15 @@ def test_python_ok(gitrepo):
     file_a = None
 
     # Create file 'a'
-    with open(inspect.getfile(inspect.currentframe()), "r") as thisfile:
-        file_a = util.write_file(gitrepo, 'a.py', thisfile.read())
+    file_a = util.write_ok_pyfile(gitrepo, 'a.py')
     assert githooks.precommit_hook()
 
     # Add 'a'
     util.cmd(gitrepo, 'git add ' + file_a)
-    assert not githooks.precommit_hook()
+    assert githooks.precommit_hook()
+
+    file_a = util.write_file(gitrepo, 'a.py', ' ')
+    assert githooks.precommit_hook()
 
     # Commit 'a'
     util.cmd(gitrepo, 'git commit -m python_ok')

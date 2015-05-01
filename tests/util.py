@@ -2,13 +2,22 @@
 
 import os
 import subprocess
-
+import inspect
 
 def write_file(tmp_dir, filename, contents):
     """Write file into temp dir"""
     with open(os.path.join(tmp_dir, filename), 'w') as wfile:
         wfile.write(contents)
     return filename
+
+
+def write_ok_pyfile(tmp_dir, filename):
+    """Write a proper python file to the given location"""
+    mypath = os.path.dirname( \
+            os.path.abspath(inspect.getfile(inspect.currentframe())))
+    with open(os.path.join(mypath, "ok_py_file.py"), "r") as thisfile:
+        return write_file(tmp_dir, filename, thisfile.read())
+    return None
 
 
 def cmd(tmp_dir, args):
