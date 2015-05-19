@@ -32,11 +32,6 @@ def _pylint_check_file(config, orig_file, current_file):
     if current_file == None:
         return True
 
-    # Allow __init__.py files to be completely empty
-    if os.path.basename(current_file) == '__init__.py':
-        if os.stat(current_file).st_size == 0:
-            return True
-
     current_out = pylint.pylint(config, current_file)
     current_score = pylint.parse_score(current_out)
 
@@ -76,6 +71,11 @@ class PylintHook(githook.GitHook):
         sys.stdout.flush()
         original_file = changeset_info.original_file(filename)
         current_file = changeset_info.current_file(filename)
+
+        # Allow __init__.py files to be completely empty
+        if os.path.basename(filename) == '__init__.py':
+            if os.stat(current_file.name).st_size == 0:
+                return True
         try:
             ret = _pylint_check_file(
                 self.config, original_file.name, current_file.name)

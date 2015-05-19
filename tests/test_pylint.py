@@ -50,3 +50,15 @@ def test_python_problem(gitrepo):
     # Commit 'a'
     util.cmd(gitrepo, 'git commit -m python_fail')
     assert githooks.precommit_hook()
+
+def test_python_init(gitrepo):
+    """ Test whether the __init__.py file is properly accepted """
+
+    file_ini = util.write_file(gitrepo, '__init__.py', '')
+    assert githooks.precommit_hook()
+
+    util.cmd(gitrepo, 'git add ' + file_ini)
+    assert githooks.precommit_hook()
+
+    util.cmd(gitrepo, 'git commit -m python_fail')
+    assert githooks.precommit_hook()
