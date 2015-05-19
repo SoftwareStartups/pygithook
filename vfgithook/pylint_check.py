@@ -75,6 +75,7 @@ class PylintHook(githook.GitHook):
         # Allow __init__.py files to be completely empty
         if os.path.basename(filename) == '__init__.py':
             if os.stat(current_file.name).st_size == 0:
+                print '\tPASSED'
                 return True
         try:
             ret = _pylint_check_file(
