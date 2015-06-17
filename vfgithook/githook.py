@@ -67,6 +67,7 @@ class TemporaryFile(DisposableFile):
         """ Delete the file if it wasn't already done """
         if self.name != None:
             os.remove(self.name)
+            os.rmdir(os.path.dirname(self.name))
         self.name = None
 
 

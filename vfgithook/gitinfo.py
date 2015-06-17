@@ -2,6 +2,7 @@
 import tempfile
 import subprocess
 import logging
+import os
 
 from . import command
 
@@ -94,9 +95,7 @@ def revision_tmp_file(revision, filename):
     if result == None:
         return None
 
-    tmp_file = tempfile.NamedTemporaryFile(delete=False)
-    try:
+    tmpname = os.path.join(tempfile.mkdtemp(), os.path.basename(filename))
+    with open(tmpname, "w") as tmp_file:
         tmp_file.write(result)
-    finally:
-        tmp_file.close()
-    return tmp_file.name
+    return tmpname

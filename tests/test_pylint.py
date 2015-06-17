@@ -1,6 +1,6 @@
 """Testsuite for vfgithook.pylint"""
 
-from vfgithook import pylint, githooks
+from vfgithook import pylint, githooks, gitinfo
 
 import tests.util as util
 
@@ -15,10 +15,33 @@ def test_parse_score():
     assert pylint.parse_score(text) == 0.0
 
 
-def test_python_ok(gitrepo):
-    """Test whether the python hook will fail when something is wrong"""
+def test_tmp_score(gitrepo):
+    """ Test whether a tmp file has the same score as its original """
+    file_a = util.write_ok_pyfile(gitrepo, 'a.py')
+    assert githooks.precommit_hook()
 
-    file_a = None
+    # Add 'a'
+    util.cmd(gitrepo, 'git add ' + file_a)
+    assert githooks.precommit_hook()
+
+    # Commit 'a'
+    util.cmd(gitrepo, 'git commit -m python_ok')
+    assert githooks.precommit_hook()
+
+    config = pylint.config_from_pylintrc()
+
+    real_out = pylint.pylint(config, file_a)
+
+    file_tmp = gitinfo.revision_tmp_file(gitinfo.current_commit(), file_a)
+
+    tmp_out = pylint.pylint(config, file_tmp)
+    print tmp_out
+
+    assert pylint.parse_score(real_out) == pylint.parse_score(tmp_out)
+
+
+def test_python_ok(gitrepo):
+    """Test whether the python hook will fail when everything is ok"""
 
     # Create file 'a'
     file_a = util.write_ok_pyfile(gitrepo, 'a.py')
