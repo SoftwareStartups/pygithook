@@ -18,7 +18,7 @@ LOGGER = logging.getLogger(__name__)
 
 def config_from_pylintrc(pylintrc='.pylintrc'):
     """Load hook options from the pylintrc file (if any)"""
-    config = PylintConfig(8.0, 'pylint', pylintrc, '')
+    config = PylintConfig(10.0, 'pylint', pylintrc, '')
 
     if os.path.exists(pylintrc):
         conf = ConfigParser.SafeConfigParser()
@@ -48,6 +48,7 @@ def pylint(config, python_file):
 
         cmd += ['--reports=y', '--persistent=n', python_file]
         res = command.execute(cmd)
+        print res.stdout
         LOGGER.debug(cmd)
         return res.stdout
     except OSError:

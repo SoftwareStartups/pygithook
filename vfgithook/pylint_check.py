@@ -58,10 +58,11 @@ class PylintHook(githook.GitHook):
     GitHook subclass for pylint. This hook checks whether we do not regress with
     pylint.
     """
-    _default_pylintrc = '/home1/local64/vfgithook/config/vfpylintrc'
+    _default_pylintrc = 'config/vfpylintrc'
 
-    def __init__(self):
-        self.config = pylint.config_from_pylintrc(self._default_pylintrc)
+    def __init__(self, installdir):
+        path = os.path.join(installdir, self._default_pylintrc)
+        self.config = pylint.config_from_pylintrc(path)
 
     def should_check_file(self, filename):
         return _is_python_file(filename)

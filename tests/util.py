@@ -10,6 +10,11 @@ def write_file(tmp_dir, filename, contents):
         wfile.write(contents)
     return filename
 
+def install_path():
+    """Retrieve the path of the local install"""
+    mypath = os.path.dirname( \
+            os.path.abspath(inspect.getfile(inspect.currentframe())))
+    return os.path.join(mypath, "../install")
 
 def write_ok_pyfile(tmp_dir, filename):
     """Write a proper python file to the given location"""

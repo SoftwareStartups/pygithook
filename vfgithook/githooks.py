@@ -4,10 +4,12 @@ from . import githook, pylint_check, basic_style, \
     gitinfo, message_check, branch_check
 
 
-HOOKS = [pylint_check.PylintHook(), basic_style.BasicStyleHook()]
+def hooks(installdir):
+    """Functio producing the hooks to run """
+    return [pylint_check.PylintHook(installdir), basic_style.BasicStyleHook()]
 
 
-def run_hooks(changset_info):
+def run_hooks(changset_info, installdir):
     """
     This function iterates over all changed files and runs
     the defined hooks on each of them, returning whether any issues were
@@ -15,7 +17,7 @@ def run_hooks(changset_info):
     """
     errors = 0
     for filename in changset_info.list_modified_files():
-        for hook in HOOKS:
+        for hook in hooks(installdir):
             if hook.should_check_file(filename) \
                and not hook.check_file(changset_info, filename):
                 errors += 1
@@ -26,13 +28,13 @@ def run_hooks(changset_info):
     return errors == 0
 
 
-def precommit_hook():
+def precommit_hook(installdir):
     """ Function to be called from the pre-commit hook """
     branch_check.validate_branch()
-    return run_hooks(githook.PrecommitGitInfo())
+    return run_hooks(githook.PrecommitGitInfo(), installdir)
 
 
-def update_hook(branch, from_rev, to_rev):
+def update_hook(branch, from_rev, to_rev, installdir):
     """ Function to be called from the update hook """
 
     if from_rev == gitinfo.NULL_COMMIT:
@@ -40,13 +42,13 @@ def update_hook(branch, from_rev, to_rev):
 
     changset_info = githook.UpdateGitInfo(branch, from_rev, to_rev)
 
-    hooks_ok = run_hooks(changset_info)
+    hooks_ok = run_hooks(changset_info, installdir)
     messages_ok = message_check.check_messages(changset_info.commit_messages())
 
     return hooks_ok and messages_ok
 
 
-def message_hook(message_file):
+def message_hook(message_file, _dirnotused):
     """ Function to be called from the commit-msg hook """
     with open(message_file) as msg:
         return message_check.check_message(msg.read())

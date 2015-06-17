@@ -11,7 +11,7 @@ from vfgithook import githooks
 
 if __name__ == '__main__':
     # For now we just run the githooks, but do not block pushing
-    githooks.update_hook(sys.argv[1], sys.argv[2], sys.argv[3])
+    githooks.update_hook(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4])
     sys.exit(0)
 
 

@@ -12,7 +12,7 @@ from vfgithook import githooks, logger
 if __name__ == '__main__':
     logger.setup_logger()
 
-    if githooks.precommit_hook():
+    if githooks.precommit_hook(sys.argv[1]):
         sys.exit(0)
     else:
         sys.exit(1)
