@@ -48,7 +48,6 @@ def pylint(config, python_file):
 
         cmd += ['--reports=y', '--persistent=n', python_file]
         res = command.execute(cmd)
-        print res.stdout
         LOGGER.debug(cmd)
         return res.stdout
     except OSError:
