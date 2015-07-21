@@ -1,7 +1,16 @@
 """Testsuite for vfgithook.basic_style"""
 
 from . import util
-from vfgithook import githooks, gitinfo
+from vfgithook import githooks, gitinfo, message_check
+
+
+def test_message_check():
+    """ Test whether the message check regexp is functioning """
+
+    assert message_check.check_message("VFG-0: Bla")
+    assert message_check.check_message("VFG-1: Bla")
+    assert message_check.check_message("Merged: VFG-1: Bla")
+    assert not message_check.check_message("Bla!")
 
 
 def test_message_update_ok(gitrepo):

@@ -5,7 +5,7 @@ import re
 
 def check_message(message):
     """ Check whether a message contains the VF-specific header """
-    match = re.match("(VFG|VFA|VFS|VFW)-[0-9]+", message)
+    match = re.match(".*(VFG|VFA|VFS|VFW)-[0-9]+", message)
     if not match:
         print "ERROR: Commit message is missing Jira issue number: %s" % message
     return match
