@@ -29,7 +29,7 @@ def _pylint_check_file(config, orig_file, current_file):
     The check passes if the file is new and has a pylint score >= limit,
     or if the score has not decreased wrt the current version.
     """
-    if current_file == None:
+    if current_file is None:
         return True
 
     current_out = pylint.pylint(config, current_file)
@@ -85,4 +85,3 @@ class PylintHook(githook.GitHook):
             original_file.delete()
             current_file.delete()
         return ret
-

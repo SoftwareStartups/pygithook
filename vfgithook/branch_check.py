@@ -13,5 +13,3 @@ def validate_branch():
         'git branch|grep \'*\'|awk \'{print $2}\'', shell=True)
     if co_branch == master_tracking_br:
         print 'You are trying to commit to master! Pushing may not be possible.'
-
-

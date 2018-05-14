@@ -14,3 +14,4 @@ obj
 install
 pylint.txt
 report.xml
+.pytest_cache

@@ -19,8 +19,7 @@ def current_commit():
     """Return the current commit (HEAD) revision"""
     if command.execute('git rev-parse --verify HEAD'.split()).status:
         return START_COMMIT
-    else:
-        return 'HEAD'
+    return 'HEAD'
 
 
 def current_commit_hash():
@@ -92,7 +91,7 @@ def revision_content(revision, filename):
 def revision_tmp_file(revision, filename):
     """Get the previous version for this file from git into a temp file"""
     result = revision_content(revision, filename)
-    if result == None:
+    if result is None:
         return None
 
     tmpname = os.path.join(tempfile.mkdtemp(), os.path.basename(filename))

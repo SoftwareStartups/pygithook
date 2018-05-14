@@ -1,12 +1,12 @@
 vfgithooks
 ==========
 
-By default the script looks at /home1/local64/vfgithook/config/vfpylintrc, which it passes to pylint.
-
 Installation
 ------------
 
 make
+
+Then run install/install.sh from within the git repo you want to enable the hooks for. This will install the hooks as symlinks to the install dir. This allows you to update the githooks repo and update all hooks without having to go through all your git repos again.
 
 Usage
 ------
@@ -47,5 +47,5 @@ Requirements
 
 This commit hook is written in Python and has the following requirements:
 
-- [pylint](http://www.logilab.org/857) (`sudo pip install pylint`)
 - Python >2.6 and <3.0
+- [pylint](http://www.logilab.org/857) (`pip install pylint`)

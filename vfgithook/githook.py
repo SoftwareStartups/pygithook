@@ -30,7 +30,7 @@ class GitHook(object):
         """
         raise NotImplementedError
 
-    def check_file(self, changset_info, filename):
+    def check_file(self, changeset_info, filename):
         """
         Abstract function for doing the actual check
         """

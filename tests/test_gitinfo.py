@@ -1,7 +1,7 @@
 """Testsuite for vfgithook.gitinfo"""
 
-from . import util
 from vfgithook import gitinfo
+from . import util
 
 
 def test_current_commit(gitrepo):
@@ -20,11 +20,11 @@ def test_list_staged_files(gitrepo):
     """Test gitinfo.list_staged_files"""
 
     # Test empty tree
-    assert len(gitinfo.list_staged_files(gitinfo.current_commit())) == 0
+    assert not gitinfo.list_staged_files(gitinfo.current_commit())
 
     # Create file 'a'
     file_a = util.write_file(gitrepo, 'a', 'foo')
-    assert len(gitinfo.list_staged_files(gitinfo.current_commit())) == 0
+    assert not gitinfo.list_staged_files(gitinfo.current_commit())
 
     # Add 'a'
     util.cmd(gitrepo, 'git add ' + file_a)
@@ -36,13 +36,12 @@ def test_list_staged_files(gitrepo):
 
     # Commit 'a'
     util.cmd(gitrepo, 'git commit -m msg')
-    assert len(gitinfo.list_staged_files(gitinfo.current_commit())) == 0
+    assert not gitinfo.list_staged_files(gitinfo.current_commit())
 
     # Edit 'a'
     util.write_file(gitrepo, 'a', 'bar')
-    assert len(gitinfo.list_staged_files(gitinfo.current_commit())) == 0
+    assert not gitinfo.list_staged_files(gitinfo.current_commit())
 
     # Add 'a'
     util.cmd(gitrepo, 'git add ' + file_a)
     assert gitinfo.list_staged_files(gitinfo.current_commit()) == [file_a]
-

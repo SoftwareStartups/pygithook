@@ -1,15 +1,15 @@
 """Testsuite for vfgithook.basic_style"""
 
-from . import util
 from vfgithook import githooks, gitinfo, message_check
+from . import util
 
 
 def test_message_check():
     """ Test whether the message check regexp is functioning """
 
-    assert message_check.check_message("VFG-0: Bla")
-    assert message_check.check_message("VFG-1: Bla")
-    assert message_check.check_message("Merged: VFG-1: Bla")
+    assert message_check.check_message("VFTEST-0: Bla")
+    assert message_check.check_message("VFTEST-1: Bla")
+    assert message_check.check_message("Merged: VFTEST-1: Bla")
     assert not message_check.check_message("Bla!")
 
 
@@ -25,7 +25,7 @@ def test_message_update_ok(gitrepo):
     assert githooks.precommit_hook(util.install_path())
 
     # Commit 'a'
-    util.cmd(gitrepo, 'git commit -m VFG-0')
+    util.cmd(gitrepo, 'git commit -m VFTEST-0')
     assert githooks.precommit_hook(util.install_path())
 
     start = gitinfo.current_commit()
@@ -39,7 +39,7 @@ def test_message_update_ok(gitrepo):
     assert githooks.precommit_hook(util.install_path())
 
     # Commit 'b'
-    util.cmd(gitrepo, 'git commit -m VFG-1')
+    util.cmd(gitrepo, 'git commit -m VFTEST-1')
     assert githooks.precommit_hook(util.install_path())
 
     end = gitinfo.current_commit()
@@ -59,7 +59,7 @@ def test_message_update_fail(gitrepo):
     assert githooks.precommit_hook(util.install_path())
 
     # Commit 'a'
-    util.cmd(gitrepo, 'git commit -m VFG-0')
+    util.cmd(gitrepo, 'git commit -m VFTEST-0')
     assert githooks.precommit_hook(util.install_path())
 
     start = gitinfo.current_commit_hash()
@@ -73,10 +73,9 @@ def test_message_update_fail(gitrepo):
     assert githooks.precommit_hook(util.install_path())
 
     # Commit 'b'
-    util.cmd(gitrepo, 'git commit -m VFG-X')
+    util.cmd(gitrepo, 'git commit -m VFTEST-X')
     assert githooks.precommit_hook(util.install_path())
 
     end = gitinfo.current_commit_hash()
 
     assert not githooks.update_hook("master", start, end, util.install_path())
-

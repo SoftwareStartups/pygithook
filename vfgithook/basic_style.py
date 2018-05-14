@@ -6,13 +6,20 @@ import sys
 
 from . import githook
 
+MAX_LINE_LENGTH = 90
 TABS = re.compile(r'(\t+)')
 TRAIL = re.compile(r'([ \t]+)$')
 
-LANG_TYPES = ['ml', 'mli', 'mly', 'mll', 'py', 'lint',
-              '.hh', '.hpp', '.hxx', '.h++', '.cc', '.cpp',
-              '.cxx', '.c++', 'c', 'h']
-CHECKLENGTHMAGIC = '__VF_HGHOOK_IGNORE_LONGLINE'
+LANG_TYPES = ['ml', 'mli', 'mly', 'mll',
+              'py', 'lint',
+              'hh', 'hpp', 'hxx', 'h++', 'cc', 'cpp', 'cxx', 'c++',
+              'c', 'h',
+              'cs',
+              'css', 'js', 'jsx',
+              'java', 'scala',
+              'sol']
+
+CHECKLENGTHMAGIC = '__GITHOOK_IGNORE_LONGLINE'
 
 
 def _check_file(filename):
@@ -54,7 +61,7 @@ class ValidationStats(object):
         return self.toolong or self.tabs or \
                self.trailwhite or self.cret
 
-def _validate(changset_info, filename, stats, exit_code):
+def _validate(changeset_info, filename, stats, exit_code):
     """
     Check a file for simple styling issues
     """
@@ -66,9 +73,9 @@ def _validate(changset_info, filename, stats, exit_code):
         """ To be called when we find a styling violation """
         if exit_code is not None:
             sys.exit(exit_code)
-    content = changset_info.current_content(filename)
+    content = changeset_info.current_content(filename)
 
-    if content == None:
+    if content is None:
         return
 
     staged_lines = content.split('\n')
@@ -88,9 +95,9 @@ def _validate(changset_info, filename, stats, exit_code):
             msg(i, line, 'carriage return found')
             bad()
 
-        # lines max out at 90 chars
+        # lines max out at MAX_LINE_LENGTH chars
         llen = _linelen(line)
-        if check_length and llen > 90:
+        if check_length and llen > MAX_LINE_LENGTH:
             stats.toolong += 1
             msg(i, line, 'line too long (%d chars)' % llen)
             bad()
@@ -109,13 +116,13 @@ def _validate(changset_info, filename, stats, exit_code):
             bad()
 
 
-def _check_format(filename, changset_info):
+def _check_format(filename, changeset_info):
     """
     Check file formatting for a specific file, returns whether there were any
     violations.
     """
     errors = ValidationStats()
-    _validate(changset_info, filename, errors, None)
+    _validate(changeset_info, filename, errors, None)
     return not errors # no errors found
 
 
@@ -125,6 +132,5 @@ class BasicStyleHook(githook.GitHook):
     def should_check_file(self, filename):
         return _check_file(filename)
 
-    def check_file(self, changset_info, filename):
-        return _check_format(filename, changset_info)
-
+    def check_file(self, changeset_info, filename):
+        return _check_format(filename, changeset_info)

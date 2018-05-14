@@ -1,7 +1,7 @@
 """Testsuite for vfgithook.basic_style"""
 
-from . import util
 from vfgithook import githooks
+from . import util
 
 
 def test_basic_style_ok(gitrepo):
@@ -24,7 +24,7 @@ def test_basic_style_problem(gitrepo):
     """Test whether the basic_style hook will fail when something is wrong"""
 
     # Create file 'a'
-    file_a = util.write_file(gitrepo, 'a.ml', ' ')
+    file_a = util.write_file(gitrepo, 'a.java', ' ')
     assert githooks.precommit_hook(util.install_path())
 
     # Add 'a'
