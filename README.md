@@ -1,12 +1,20 @@
 vfgithooks
 ==========
 
+Customization
+-------------
+
+Jira project keys (to check for in commit messages) are hardcoded in `vfgithook/message_check.py`
+Max line length is hardcoded in `vfgithook/basic_style.py`
+
 Installation
 ------------
 
-make
+To install run:
 
-Then run install/install.sh from within the git repo you want to enable the hooks for. This will install the hooks as symlinks to the install dir. This allows you to update the githooks repo and update all hooks without having to go through all your git repos again.
+    make
+
+Then run `install/install.sh` from within the git repo you want to enable the hooks for. This will install the hooks as symlinks to the install dir. This allows you to update the githooks repo and update all hooks without having to go through all your git repos again.
 
 Usage
 ------
