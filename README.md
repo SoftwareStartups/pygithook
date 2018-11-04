@@ -1,5 +1,12 @@
-vfgithooks
-==========
+pygithook
+=========
+
+Extendable python library and scripts to create git hooks. Performs a number of actions on committed files:
+- check for line length, tabs vs spaces
+- check pylint. It only fails the commit if pylint on this version is worse than the previous version, or below a preset minimum.
+- check commit messages for a Jira issue ID
+
+Developed by Vector Fabrics, hence the "VF" names...
 
 Customization
 -------------
